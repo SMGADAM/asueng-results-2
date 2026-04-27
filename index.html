@@ -135,10 +135,10 @@
                         <p>الدرجة : <span style="font-weight: bold;font-size: 25px;">${student1.quiz2}</span> / 10</p>
                     </div>
                 `;
-                if(student.quiz2 >= 8){
+                if(student1.quiz2 >= 8){
                     output.innerHTML += `<div style="display:block;" class="message"><video width="100%" height="auto" autoplay controls><source src="san.mp4" type="video/mp4"></video></div>`;
                 }
-                else if(student.quiz2 >= 5){
+                else if(student1.quiz2 >= 5){
                     output.innerHTML += `<div style="display: none;" class="message"><video width="100%" height="auto" autoplay controls><source src="moderate.mp3" type="video/mp4"></video></div>`;    
                 }
                 else{
