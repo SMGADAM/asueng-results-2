@@ -1,0 +1,153 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نتيجة الكويز الاول - Projection</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+            color: #333;
+            line-height: 1.6;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+        form {
+            max-width: 420px;
+            margin: 0 auto 20px;
+            background: white;
+            padding: 22px;
+            border-radius: 10px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        button {
+            display: block;
+            width: 100%;
+            margin-top: 16px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #2c80b4;
+        }
+        .result,
+        .message {
+            max-width: 420px;
+            margin: 20px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+        }
+        .result h2 {
+            color: #27ae60;
+            margin-top: 0;
+        }
+        .result p,
+        .message p {
+            margin: 10px 0;
+            font-size: 16px;
+        }
+        .error {
+            color: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+    <video style="display: none;" width="100%" height="auto" autoplay controls><source src="num1.mp4" type="video/mp4"></video>
+    <video width="100%" style="display: none;" height="auto" autoplay controls><source src="giar.mp4" type="video/mp4"></video>
+    <h1>نتيجة الكويز الثاني</h1>
+
+    <form id="searchForm">
+        <label for="student_id">أدخل كود الطالب</label>
+        <input type="text" id="student_id" name="student_id" placeholder="2500000" required>
+        <button type="submit">عرض النتيجة</button>
+    </form>
+
+    <div id="output"></div>
+
+    <script>
+        const form = document.getElementById('searchForm');
+        const output = document.getElementById('output');
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            output.innerHTML = '';
+
+            const studentId = document.getElementById('student_id').value.trim();
+            if (!studentId) {
+                output.innerHTML = '<div class="message error"><p>الرجاء إدخال رقم الطالب.</p></div>';
+                return;
+            }
+
+            try {
+                const response = await fetch('data.json');
+                if (!response.ok) {
+                    throw new Error('فشل تحميل ملف البيانات');
+                }
+
+                const students = await response.json();
+                const student = students.find(item => item.code === studentId || item.bn === studentId);
+
+
+                const response1 = await fetch('data2.json');
+                if (!response.ok) {
+                    throw new Error('فشل تحميل ملف البيانات');
+                }
+
+                const students1 = await response1.json();
+                const student1 = students1.find(item => item.code === studentId || item.bn === studentId);
+
+
+                if (!student) {
+                    output.innerHTML = '<div class="message error"><p>الطالب غير موجود في ملف البيانات.</p></div>';
+                    return;
+                }
+
+                output.innerHTML = `
+                    <div class="result">
+                        <h2> ${student.name}</h2>
+                        <p>الكود: ${student.code || student.bn}</p>
+                        <p>الدرجة : <span style="font-weight: bold;font-size: 25px;">${student1.quiz2}</span> / 10</p>
+                    </div>
+                `;
+                if(student.quiz1 >= 8){
+                    output.innerHTML += `<div style="display:block;" class="message"><video width="100%" height="auto" autoplay controls><source src="san.mp4" type="video/mp4"></video></div>`;
+                }
+                else if(student.quiz1 >= 5){
+                    output.innerHTML += `<div style="display: none;" class="message"><video width="100%" height="auto" autoplay controls><source src="moderate.mp3" type="video/mp4"></video></div>`;    
+                }
+                else{
+                    output.innerHTML += `<div style="display: none;" class="message"><video width="100%" height="auto" autoplay controls><source src="mal3b.mp3" type="video/mp4"></video></div>`;    
+                } 
+            } catch (error) {
+                output.innerHTML = `<div class="message error"><p>حدث خطأ: ${error.message}</p></div>`;
+            }
+        });
+    </script>
+</body>
+</html>
